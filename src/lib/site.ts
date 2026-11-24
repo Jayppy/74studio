@@ -61,3 +61,6 @@ export function pageHead(title: string, description: string, path: string, type:
     links: [{ rel: "canonical", href: url }],
   };
 }
+
+/** Festive season: shows the Santa hat overlay on the logo. Set to false to restore the normal logo. */
+export const FESTIVE_LOGO = true;

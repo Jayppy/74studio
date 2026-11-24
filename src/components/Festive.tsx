@@ -25,13 +25,13 @@ export function FestiveBanner() {
   const units = [["Days", c.days], ["Hrs", c.hours], ["Min", c.minutes], ["Sec", c.seconds]] as const;
   const group = <span className="flex shrink-0">{Array.from({ length: 4 }, (_, i) => <span key={i} className="px-8">{MSG}</span>)}</span>;
   return (
-    <div className="festive-banner flex items-stretch" role="region" aria-label="Christmas and New Year special">
+    <div className="festive-banner" role="region" aria-label="Christmas and New Year special">
       <p className="sr-only">{MSG}</p>
-      <div className="relative min-w-0 flex-1 overflow-hidden py-2" aria-hidden="true">
+      <div className="relative min-w-0 overflow-hidden py-2" aria-hidden="true">
         <div className="festive-ticker flex w-max font-display text-xs font-semibold tracking-[0.14em] sm:text-[13px]">{group}{group}</div>
       </div>
-      <div className="flex shrink-0 items-center gap-1.5 border-l border-gold/40 bg-background/40 px-3 sm:px-4" aria-label="Time left in the offer">
-        <span className="hidden text-[10px] font-semibold uppercase tracking-[0.16em] text-gold md:inline">Ends in</span>
+      <div className="festive-countdown flex items-center justify-center gap-2 border-t border-gold/35 bg-background/35 px-3 py-1.5 sm:gap-3" aria-label="Time left in the offer">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Ends in</span>
         {units.map(([l, v], i) => (
           <span key={l} className="flex items-baseline font-display tabular-nums">
             <span className="text-sm font-bold text-festive-foreground sm:text-base">{c.ready ? pad(v) : "--"}</span>

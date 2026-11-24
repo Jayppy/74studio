@@ -1,0 +1,7 @@
+[
+{"capability":"code","source":"74-studio-main.zip","outcome":"migrate","status":"done","next_action":null},
+{"capability":"schema","source":"drizzle migrations","outcome":"migrate","status":"done","next_action":null},
+{"capability":"records (posts, inquiries)","source":"old database","outcome":"migrate","status":"pending","next_action":"user exports CSV/JSON"},
+{"capability":"auth (email/password admin)","source":"old Cloud auth","outcome":"migrate","status":"pending","next_action":"first sign-up becomes admin; existing admin re-registers"},
+{"capability":"storage blog-covers","source":"migration policies","outcome":"not used by code","status":"skipped","next_action":null}
+]

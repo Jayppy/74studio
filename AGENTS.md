@@ -28,3 +28,15 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Portfolio items are static data in src/lib/portfolio.ts (YouTube + Drive embeds), not DB rows — content changes rarely and needs no admin.
+- Blog posts live in the posts table; public reads go through server fns with the publishable client, writes are admin-only via RLS + has_role.
+- First account to sign up becomes admin (DB trigger); later sign-ups get no role.
+- Every public route sets head via pageHead(title, description, path) from src/lib/site.ts, which emits an absolute canonical + og:url on SITE_URL — one place controls the preferred domain.
+- Every route declares staticData.sitemap; /sitemap.xml is derived from the router (src/lib/sitemap.ts) plus published blog posts, so new pages need only that flag.
+- Brand images (logo, covers) are bundled imports from src/assets, not lovable-assets CDN pointers — the site is also served from hosting outside Lovable, where /__l5e/ asset URLs 404.
+- Interactive cues (links, active nav, focus rings, labels) use the single `steel` token in src/styles.css; chrome gradients stay for headlines and primary buttons — one accent keeps navigation obvious without diluting the brand.
+- The site uses one mid-dark colour theme: every colour token is defined once in `:root` of src/styles.css (html has no `dark` class, `color-scheme: dark` for native controls). Brand imagery (logo, hero) is used in its original form, so the ground must stay dark enough for a silver chrome mark.
+- Public server reads (blog, sitemap) build their client via src/lib/public-supabase.ts, which falls back to build-time VITE_ values — the site is also hosted outside Lovable, where SUPABASE_* server variables are absent and the blog 500s without the fallback.
+- The Discord invite lives once in DISCORD_URL (src/lib/site.ts); the floating chat button, closing CTAs, socials and the contact thank-you all read it, so a new invite is a one-line change.
+- New standalone service offerings use public leaf routes with pageHead and sitemap flags; inquiry options extend SERVICES so dropdown validation and submission stay in sync without changing the stored text format.

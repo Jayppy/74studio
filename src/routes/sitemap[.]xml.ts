@@ -1,0 +1,53 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { getRouterInstance } from "@tanstack/react-start";
+import { isSitemapRouteIncluded, sitemapPathForLocation, sitemapStaticPaths, sitemapXML, type SitemapEntry } from "@/lib/sitemap";
+import { SITE_URL } from "@/lib/site";
+
+const BASE_URL = `${SITE_URL}/`;
+
+export const Route = createFileRoute("/sitemap.xml")({
+  staticData: { sitemap: false },
+  server: {
+    handlers: {
+      GET: async () => {
+        const router = await getRouterInstance();
+        const entries: SitemapEntry[] = sitemapStaticPaths(router).map((path) => ({ path }));
+
+        const routeId = "/blog/$slug";
+        if (isSitemapRouteIncluded(router.routesById[routeId])) {
+          const { publicSupabase } = await import("@/lib/public-supabase");
+          const supabase = publicSupabase();
+          const pageSize = 1000;
+          for (let offset = 0; ; ) {
+            const { data, error } = await supabase
+              .from("posts")
+              .select("id, slug, updated_at")
+              .eq("published", true)
+              .order("id")
+              .range(offset, offset + pageSize - 1);
+            if (error) throw error;
+            if (!data || data.length === 0) break;
+            for (const row of data) {
+              const location = router.buildLocation({
+                to: "/blog/$slug", params: { slug: row.slug }, search: () => ({}), hash: "",
+              });
+              const path = sitemapPathForLocation(router, location, routeId);
+              if (path) entries.push({ path, lastmod: row.updated_at ?? undefined });
+            }
+            offset += data.length;
+          }
+        }
+
+        if (entries.length === 0) {
+          return new Response(
+            'No pages are included in this sitemap. Check route decisions and ancestor exclusions. Setting "exclude-subtree" on the root excludes the entire site.',
+            { status: 404, headers: { "Cache-Control": "no-store" } },
+          );
+        }
+        return new Response(sitemapXML(BASE_URL, entries), {
+          headers: { "Content-Type": "application/xml", "Cache-Control": "public, max-age=3600" },
+        });
+      },
+    },
+  },
+});

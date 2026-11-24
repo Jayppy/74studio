@@ -1,0 +1,136 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { z } from "zod";
+import { toast } from "sonner";
+import { PageHero } from "@/components/SiteChrome";
+import { DiscordLink } from "@/components/DiscordButton";
+import { supabase } from "@/integrations/supabase/client";
+import { pageHead, SERVICES, SOCIALS, STUDIO_EMAIL } from "@/lib/site";
+
+export const Route = createFileRoute("/contact")({
+  staticData: { sitemap: true },
+  head: () => pageHead("Contact 74 Studio | Start Your Music Video Project", "Tell 74 Studio about your music video, animation, editing or ad project and request a personalized quote.", "/contact"),
+  component: Contact,
+});
+
+export const contactSchema = z.object({
+  name: z.string().trim().min(1, "Please enter your name").max(120),
+  email: z.string().trim().email("Enter a valid email").max(255),
+  project_name: z.string().trim().max(200).optional(),
+  service: z.enum(SERVICES, { message: "Choose a service" }),
+  deadline: z.string().trim().max(100).optional(),
+  runtime: z.string().trim().max(100).optional(),
+  budget: z.string().trim().max(120, "Budget must be less than 120 characters").optional(),
+  music_link: z.union([z.literal(""), z.string().trim().url("Enter a full link (https://...)").max(500)]).optional(),
+  references_text: z.string().trim().max(2000).optional(),
+  description: z.string().trim().min(10, "Tell us a bit more (at least 10 characters)").max(5000),
+});
+
+const field = "mt-2 w-full rounded-md border border-input bg-background px-4 py-3 text-base text-foreground outline-none transition hover:border-foreground/50 focus:border-steel focus:ring-2 focus:ring-steel/30 aria-[invalid=true]:border-destructive";
+
+function Contact() {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [busy, setBusy] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const raw = Object.fromEntries(new FormData(form)) as Record<string, string>;
+    const parsed = contactSchema.safeParse(raw);
+    if (!parsed.success) {
+      const errs: Record<string, string> = {};
+      parsed.error.issues.forEach((i) => (errs[String(i.path[0])] = i.message));
+      setErrors(errs);
+      return;
+    }
+    setErrors({});
+    setBusy(true);
+    const { error } = await supabase.from("inquiries").insert({
+      name: parsed.data.name,
+      email: parsed.data.email,
+      service: parsed.data.service,
+      description: parsed.data.description,
+      project_name: parsed.data.project_name || null,
+      deadline: parsed.data.deadline || null,
+      runtime: parsed.data.runtime || null,
+      budget: parsed.data.budget || null,
+      music_link: parsed.data.music_link || null,
+      references_text: parsed.data.references_text || null,
+    });
+    setBusy(false);
+    if (error) {
+      toast.error("Something went wrong sending your inquiry. Please try again or email us directly.");
+      return;
+    }
+    form.reset();
+    setSent(true);
+    toast.success("Inquiry received. We'll be in touch.");
+  }
+
+  const F = (props: { name: string; label: string; children: React.ReactNode }) => Field({ ...props, error: errors[props.name] });
+
+  return (
+    <>
+      <PageHero eyebrow="Contact" title="Tell us what you're imagining.">
+        Whether you're releasing a single, planning an album, or creating promotional content, let's discuss how 74 STUDIO can bring your vision to life.
+      </PageHero>
+      <section className="mx-auto grid max-w-7xl gap-16 px-5 pb-28 lg:grid-cols-[1fr_320px]">
+        {sent ? (
+          <div className="rounded-lg border border-steel/50 bg-card p-10 shadow-card">
+            <h2 className="text-3xl font-bold uppercase">Thank you.</h2>
+            <p className="mt-4 text-muted-foreground">Your inquiry has been received. We review every project personally and will reply to the email you provided.</p>
+            <div className="mt-8 rounded-md border border-border bg-background p-6">
+              <p className="font-display text-lg font-semibold uppercase">Want a quicker response?</p>
+              <p className="mt-2 text-muted-foreground">Chat with our team on Discord to talk through your project in real time.</p>
+              <DiscordLink className="mt-5" />
+            </div>
+            <button className="btn-line mt-8" onClick={() => setSent(false)}>Send another inquiry</button>
+          </div>
+        ) : (
+          <form onSubmit={onSubmit} noValidate className="grid gap-6 rounded-lg border border-border bg-card p-6 shadow-card sm:grid-cols-2 md:p-10">
+            <p className="text-sm text-muted-foreground sm:col-span-2">Fields marked * are required. Every inquiry gets a personal reply with a tailored quote.</p>
+            <F name="name" label="Name *"><input name="name" className={field} autoComplete="name" /></F>
+            <F name="email" label="Email *"><input name="email" type="email" className={field} autoComplete="email" /></F>
+            <F name="project_name" label="Artist / Project name"><input name="project_name" className={field} /></F>
+            <F name="service" label="Service required *">
+              <select name="service" className={field} defaultValue="">
+                <option value="" disabled>Select a service</option>
+                {SERVICES.map((s) => <option key={s}>{s}</option>)}
+              </select>
+            </F>
+            <F name="deadline" label="Project deadline"><input name="deadline" type="date" className={field} /></F>
+            <F name="runtime" label="Desired runtime"><input name="runtime" placeholder="e.g. 3:20" className={field} /></F>
+            <div className="sm:col-span-2"><F name="budget" label="Budget"><input name="budget" placeholder="e.g. $1,500, under $500, or open to offers" className={field} /></F></div>
+            <div className="sm:col-span-2"><F name="music_link" label="Music link"><input name="music_link" placeholder="https://" className={field} /></F></div>
+            <div className="sm:col-span-2"><F name="references_text" label="Creative references"><textarea name="references_text" rows={3} className={field} /></F></div>
+            <div className="sm:col-span-2"><F name="description" label="Project description *"><textarea name="description" rows={6} className={field} /></F></div>
+            <div className="sm:col-span-2"><button type="submit" disabled={busy} className="btn-chrome disabled:opacity-60">{busy ? "Sending…" : "Request a quote"}</button></div>
+          </form>
+        )}
+        <aside className="space-y-8 lg:pt-4">
+          <div>
+            <p className="eyebrow">Email</p>
+            <a href={`mailto:${STUDIO_EMAIL}`} className="mt-2 block break-all font-display text-lg font-semibold text-steel hover:text-foreground">{STUDIO_EMAIL}</a>
+          </div>
+          <div>
+            <p className="eyebrow">Find us</p>
+            <ul className="mt-3 space-y-2">
+              {SOCIALS.map((s) => <li key={s.href}><a href={s.href} target="_blank" rel="noreferrer" className="font-display font-semibold uppercase text-foreground/85 transition hover:text-steel">{s.label} ↗</a></li>)}
+            </ul>
+          </div>
+        </aside>
+      </section>
+    </>
+  );
+}
+
+function Field({ label, children, error }: { name: string; label: string; children: React.ReactNode; error?: string | undefined }) {
+  return (
+    <label className="block">
+      <span className="font-display text-sm font-semibold uppercase tracking-[0.08em] text-foreground">{label}</span>
+      {children}
+      {error && <span role="alert" className="mt-1.5 block text-sm font-medium text-destructive">{error}</span>}
+    </label>
+  );
+}

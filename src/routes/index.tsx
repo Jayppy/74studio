@@ -1,23 +1,86 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import hero from "@/assets/hero-chrome.jpg";
+import { ProjectGrid } from "@/components/ProjectGrid";
+import { ClosingCta } from "@/components/SiteChrome";
+import { homeSelectedWorks } from "@/lib/portfolio";
+import { pageHead } from "@/lib/site";
 
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  staticData: { sitemap: true },
+  head: () => pageHead("74 Studio | Music Videos, Visualizers & Video Editing", "74 Studio creates cinematic music videos, AI music videos, visualizers and short-form video content for independent artists, musicians and brands.", "/"),
+  component: Home,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+const services = [
+  { n: "01", t: "AI Music Videos", d: "AI-assisted cinematic visuals and conceptual storytelling.", to: "/music-videos" },
+  { n: "02", t: "2D Animation", d: "Custom illustrated animation synced to your music.", to: "/music-videos" },
+  { n: "03", t: "3D Music Videos", d: "Cinematic 3D worlds and character-driven stories.", to: "/music-videos" },
+  { n: "04", t: "Short-Form Video Editing", d: "Reels, TikToks, Shorts and teasers cut to captivate.", to: "/video-editing" },
+  { n: "05", t: "UGC & Product Ads", d: "Creator-style ads and product demos for brands.", to: "/ugc-ads" },
+  { n: "06", t: "Album Cover Artwork", d: "Original album and single artwork. 100% human-designed, never AI-generated.", to: "/album-cover-artwork" },
+  { n: "07", t: "Complete Single Release Promo Content", d: "Cover Artwork + Music Video + Short Promo Visualizer. One cohesive visual identity for your release.", to: "/single-release-promo" },
+] as const;
+
+function Home() {
+  const featured = homeSelectedWorks();
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <section className="relative isolate flex min-h-[88vh] items-end overflow-hidden">
+        <img src={hero} alt="Sculptural chrome forms lit in a dark studio" width={1920} height={1088} fetchPriority="high" decoding="async" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-70" />
+        <div className="bg-fade absolute inset-0 -z-10" />
+        <div className="bg-side-fade absolute inset-0 -z-10" />
+        <div className="mx-auto w-full max-w-7xl px-5 pb-20">
+          <p className="eyebrow">We turn sound into something you can see.</p>
+          <h1 className="mt-6 text-6xl font-bold uppercase leading-[0.88] md:text-[9rem]">
+            <span className="text-chrome">Your music.<br />Our visuals.</span>
+          </h1>
+          <p className="mt-8 max-w-xl text-lg leading-relaxed text-foreground/90">
+            74 STUDIO is an independent creative studio producing cinematic music videos, visualizers, animated visuals, and short-form video content for independent artists, musicians, producers and brands who want their music to stand out.
+          </p>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link to="/portfolio" className="btn-chrome">Explore our work</Link>
+            <Link to="/contact" className="btn-line">Start a project</Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 py-24">
+        <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="eyebrow">Portfolio</p>
+            <h2 className="mt-3 text-4xl font-bold uppercase md:text-6xl">Selected works</h2>
+          </div>
+          <Link to="/portfolio" className="btn-line">View all projects</Link>
+        </div>
+        <ProjectGrid projects={featured} />
+      </section>
+
+      <section className="border-y border-border bg-card">
+        <div className="mx-auto max-w-7xl px-5 py-24">
+          <p className="eyebrow">Services</p>
+          <h2 className="mt-3 text-4xl font-bold uppercase md:text-6xl">What we create</h2>
+          <div className="mt-14 divide-y divide-border border-y border-border">
+            {services.map((s) => (
+              <Link key={s.n} to={s.to} className="group grid items-baseline gap-4 px-2 py-8 transition hover:bg-steel-soft md:grid-cols-[80px_1fr_1fr_32px]">
+                <span className="eyebrow">{s.n}</span>
+                <span className="font-display text-3xl font-semibold uppercase transition group-hover:text-steel md:text-4xl">{s.t}</span>
+                <span className="text-muted-foreground">{s.d}</span>
+                <span className="hidden text-2xl text-steel transition group-hover:translate-x-1 md:block" aria-hidden="true">→</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-28 md:grid-cols-2">
+        <h2 className="text-4xl font-bold uppercase leading-tight md:text-6xl"><span className="text-chrome">Every track has a visual story.</span></h2>
+        <div className="space-y-6 text-lg leading-relaxed text-foreground/85">
+          <p>We transform music into visual experiences through animation, cinematic storytelling, and creative editing.</p>
+          <p>Every project begins with the sound, the artist, and the story they want to tell.</p>
+        </div>
+      </section>
+
+      <ClosingCta title="Let's create something that moves people." cta="Start your project" />
+    </>
   );
 }

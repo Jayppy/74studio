@@ -40,3 +40,4 @@ use the editor.
 - Public server reads (blog, sitemap) build their client via src/lib/public-supabase.ts, which falls back to build-time VITE_ values — the site is also hosted outside Lovable, where SUPABASE_* server variables are absent and the blog 500s without the fallback.
 - The Discord invite lives once in DISCORD_URL (src/lib/site.ts); the floating chat button, closing CTAs, socials and the contact thank-you all read it, so a new invite is a one-line change.
 - New standalone service offerings use public leaf routes with pageHead and sitemap flags; inquiry options extend SERVICES so dropdown validation and submission stay in sync without changing the stored text format.
+- Seasonal campaigns live in src/components/Festive.tsx + src/lib/campaign.ts + one marked block in src/styles.css, so the campaign can be removed without touching page structure.

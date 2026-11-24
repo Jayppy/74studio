@@ -4,6 +4,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { PageHero } from "@/components/SiteChrome";
 import { DiscordLink } from "@/components/DiscordButton";
+import { ContactPromo } from "@/components/Festive";
 import { supabase } from "@/integrations/supabase/client";
 import { pageHead, SERVICES, SOCIALS, STUDIO_EMAIL } from "@/lib/site";
 
@@ -76,6 +77,8 @@ function Contact() {
         Whether you're releasing a single, planning an album, or creating promotional content, let's discuss how 74 STUDIO can bring your vision to life.
       </PageHero>
       <section className="mx-auto grid max-w-7xl gap-16 px-5 pb-28 lg:grid-cols-[1fr_320px]">
+        <div className="space-y-8">
+        <ContactPromo />
         {sent ? (
           <div className="rounded-lg border border-steel/50 bg-card p-10 shadow-card">
             <h2 className="text-3xl font-bold uppercase">Thank you.</h2>
@@ -108,6 +111,7 @@ function Contact() {
             <div className="sm:col-span-2"><button type="submit" disabled={busy} className="btn-chrome disabled:opacity-60">{busy ? "Sending…" : "Request a quote"}</button></div>
           </form>
         )}
+        </div>
         <aside className="space-y-8 lg:pt-4">
           <div>
             <p className="eyebrow">Email</p>

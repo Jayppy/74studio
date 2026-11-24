@@ -4,6 +4,7 @@ import { ProjectGrid } from "@/components/ProjectGrid";
 import { ClosingCta, PageHero } from "@/components/SiteChrome";
 import { CATEGORY_LABELS, PROJECTS, type Category } from "@/lib/portfolio";
 import { pageHead } from "@/lib/site";
+import { OfferStrip, Snowfall } from "@/components/Festive";
 
 export const Route = createFileRoute("/portfolio")({
   staticData: { sitemap: true },
@@ -18,6 +19,8 @@ function Portfolio() {
   const list = f === "All" ? PROJECTS : PROJECTS.filter((p) => p.category === f);
   return (
     <>
+      <div className="relative">
+      <Snowfall count={14} />
       <PageHero eyebrow="Portfolio" title="Selected works">
         A collection of visuals, stories, and creative experiments produced at 74 STUDIO.
         <p className="mt-4 text-base">
@@ -27,7 +30,9 @@ function Portfolio() {
           <a href="https://youtube.com/@prodby74" target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-4">YouTube channel</a>.
         </p>
       </PageHero>
+      </div>
       <section className="mx-auto max-w-7xl px-5 pb-24">
+        <div className="mb-8"><OfferStrip text="Love what you see? Get 10% off any project booked before January 10, 2027." /></div>
         <div className="mb-12 flex flex-wrap gap-2" role="tablist" aria-label="Filter by category">
           {FILTERS.map((c) => (
             <button key={c} role="tab" aria-selected={f === c} onClick={() => setF(c)}

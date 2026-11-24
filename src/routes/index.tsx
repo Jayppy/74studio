@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import hero from "@/assets/hero-chrome.jpg";
 import { ProjectGrid } from "@/components/ProjectGrid";
 import { ClosingCta } from "@/components/SiteChrome";
+import { FestiveLights, HeroPromo, OfferStrip, Snowfall } from "@/components/Festive";
 import { homeSelectedWorks } from "@/lib/portfolio";
 import { pageHead } from "@/lib/site";
 
@@ -29,6 +30,8 @@ function Home() {
         <img src={hero} alt="Sculptural chrome forms lit in a dark studio" width={1920} height={1088} fetchPriority="high" decoding="async" className="absolute inset-0 -z-10 h-full w-full object-cover opacity-70" />
         <div className="bg-fade absolute inset-0 -z-10" />
         <div className="bg-side-fade absolute inset-0 -z-10" />
+        <div className="festive-glow absolute inset-0 -z-10" aria-hidden="true" />
+        <Snowfall />
         <div className="mx-auto w-full max-w-7xl px-5 pb-20">
           <p className="eyebrow">We turn sound into something you can see.</p>
           <h1 className="mt-6 text-6xl font-bold uppercase leading-[0.88] md:text-[9rem]">
@@ -41,6 +44,7 @@ function Home() {
             <Link to="/portfolio" className="btn-chrome">Explore our work</Link>
             <Link to="/contact" className="btn-line">Start a project</Link>
           </div>
+          <HeroPromo />
         </div>
       </section>
 
@@ -48,7 +52,7 @@ function Home() {
         <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="eyebrow">Portfolio</p>
-            <h2 className="mt-3 text-4xl font-bold uppercase md:text-6xl">Selected works</h2>
+            <h2 className="mt-3 text-4xl font-bold uppercase md:text-6xl">Selected works <span className="text-gold" aria-hidden="true">✦</span></h2>
           </div>
           <Link to="/portfolio" className="btn-line">View all projects</Link>
         </div>
@@ -56,10 +60,12 @@ function Home() {
       </section>
 
       <section className="border-y border-border bg-card">
+        <FestiveLights />
         <div className="mx-auto max-w-7xl px-5 py-24">
           <p className="eyebrow">Services</p>
           <h2 className="mt-3 text-4xl font-bold uppercase md:text-6xl">What we create</h2>
-          <div className="mt-14 divide-y divide-border border-y border-border">
+          <div className="mt-8"><OfferStrip text="Every service below is eligible this Christmas & New Year. Book before January 10, 2027; the discount is reflected in your quotation." /></div>
+          <div className="mt-10 divide-y divide-border border-y border-border">
             {services.map((s) => (
               <Link key={s.n} to={s.to} className="group grid items-baseline gap-4 px-2 py-8 transition hover:bg-steel-soft md:grid-cols-[80px_1fr_1fr_32px]">
                 <span className="eyebrow">{s.n}</span>

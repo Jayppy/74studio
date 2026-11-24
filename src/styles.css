@@ -218,3 +218,74 @@
   transition: filter .2s, transform .2s;
   &:hover { filter: brightness(1.08); transform: translateY(-1px); }
 }
+
+/* ---------- Christmas & New Year campaign (remove this block and src/components/Festive.tsx usages to end it) ---------- */
+:root {
+  --festive-green: oklch(0.34 0.07 160);
+  --festive-red: oklch(0.38 0.11 18);
+  --gold: oklch(0.84 0.09 85);
+  --festive-foreground: oklch(0.99 0 0);
+}
+@theme inline {
+  --color-gold: var(--gold);
+  --color-festive-green: var(--festive-green);
+  --color-festive-red: var(--festive-red);
+  --color-festive-foreground: var(--festive-foreground);
+}
+.festive-banner {
+  position: relative;
+  color: var(--festive-foreground);
+  background: linear-gradient(90deg, var(--festive-green), color-mix(in oklab, var(--festive-green) 60%, var(--festive-red)) 50%, var(--festive-red));
+  border-bottom: 1px solid color-mix(in oklab, var(--gold) 45%, transparent);
+}
+.festive-ticker { animation: festive-marquee 60s linear infinite; will-change: transform; }
+.festive-banner:hover .festive-ticker { animation-play-state: paused; }
+@keyframes festive-marquee { to { transform: translateX(-50%); } }
+
+.festive-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in oklab, var(--gold) 45%, transparent);
+  background: linear-gradient(135deg, color-mix(in oklab, var(--festive-green) 55%, var(--background)), color-mix(in oklab, var(--festive-red) 35%, var(--background)));
+  box-shadow: 0 0 40px -12px color-mix(in oklab, var(--gold) 45%, transparent), var(--shadow-card);
+}
+.text-gold-shine {
+  background: linear-gradient(180deg, oklch(0.97 0.03 90), var(--gold) 55%, oklch(0.72 0.11 75));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.btn-gold {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem;
+  padding: 0.7rem 1.4rem; border-radius: var(--radius-sm);
+  font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: oklch(0.2 0.03 160);
+  background: linear-gradient(180deg, oklch(0.93 0.07 90), var(--gold) 55%, oklch(0.74 0.11 75));
+  box-shadow: 0 8px 24px -10px color-mix(in oklab, var(--gold) 70%, transparent);
+  transition: transform .2s, filter .2s;
+}
+.btn-gold:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.btn-gold:focus-visible { outline: 2px solid var(--steel); outline-offset: 3px; }
+
+.snowfall span {
+  position: absolute; top: -10px; border-radius: 9999px;
+  background: oklch(1 0 0 / 0.8); box-shadow: 0 0 6px oklch(1 0 0 / 0.6);
+  animation-name: festive-snow; animation-timing-function: linear; animation-iteration-count: infinite;
+}
+@keyframes festive-snow { to { transform: translate3d(30px, 110vh, 0); opacity: 0.2; } }
+
+.festive-lights { display: flex; justify-content: space-between; padding: 0 1rem; height: 10px; overflow: hidden; }
+.festive-lights span {
+  width: 6px; height: 6px; margin-top: 2px; border-radius: 9999px; background: var(--gold);
+  box-shadow: 0 0 8px 2px color-mix(in oklab, var(--gold) 70%, transparent);
+  animation: festive-twinkle 2.4s ease-in-out infinite;
+}
+.festive-lights span:nth-child(3n) { background: oklch(0.65 0.18 20); box-shadow: 0 0 8px 2px oklch(0.65 0.18 20 / 0.6); }
+.festive-lights span:nth-child(3n+1) { background: oklch(0.72 0.14 155); box-shadow: 0 0 8px 2px oklch(0.72 0.14 155 / 0.6); }
+@keyframes festive-twinkle { 50% { opacity: 0.35; } }
+
+.festive-glow { background: radial-gradient(60% 50% at 80% 20%, color-mix(in oklab, var(--gold) 22%, transparent), transparent 70%), radial-gradient(40% 40% at 10% 80%, color-mix(in oklab, var(--festive-green) 40%, transparent), transparent 70%); }
+
+@media (max-width: 640px) { .snowfall span:nth-child(n+12) { display: none; } .festive-ticker { animation-duration: 45s; } }
+@media (prefers-reduced-motion: reduce) {
+  .festive-ticker { animation: none; }
+  .snowfall { display: none; }
+  .festive-lights span { animation: none; }
+}

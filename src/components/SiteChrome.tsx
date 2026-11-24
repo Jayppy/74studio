@@ -4,11 +4,13 @@ import { Menu, X } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { NAV, SOCIALS, STUDIO_EMAIL } from "@/lib/site";
 import { DiscordLink } from "@/components/DiscordButton";
+import { FestiveBanner } from "@/components/Festive";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
+      <FestiveBanner />
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-6 px-5">
         <Link to="/" aria-label="74 STUDIO home" className="shrink-0">
           <BrandLogo className="h-12 w-auto md:h-14" />

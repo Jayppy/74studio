@@ -8,6 +8,13 @@
       "when": 1795552854719,
       "tag": "0000_import_74_studio_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795576657694,
+      "tag": "0001_migration",
+      "breakpoints": true
     }
   ]
 }

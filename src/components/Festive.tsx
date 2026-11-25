@@ -30,13 +30,13 @@ export function FestiveBanner() {
       <div className="relative min-w-0 overflow-hidden py-2" aria-hidden="true">
         <div className="festive-ticker flex w-max font-display text-xs font-semibold tracking-[0.14em] sm:text-[13px]">{group}{group}</div>
       </div>
-      <div className="festive-countdown flex items-center justify-center gap-2 border-t border-gold/35 bg-background/35 px-3 py-1.5 sm:gap-3" aria-label="Time left in the offer">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Ends in</span>
+      <div className="festive-countdown flex items-center justify-center gap-1.5 border-t border-gold/35 bg-background/35 px-2 py-1 sm:gap-3 sm:px-3 sm:py-1.5" aria-label="Time left in the offer">
+        <span className="hidden text-[10px] font-semibold uppercase tracking-[0.16em] text-gold sm:inline">Ends in</span>
         {units.map(([l, v], i) => (
           <span key={l} className="flex items-baseline font-display tabular-nums">
-            <span className="text-sm font-bold text-festive-foreground sm:text-base">{c.ready ? pad(v) : "--"}</span>
-            <span className="ml-0.5 text-[9px] uppercase text-gold sm:text-[10px]">{l}</span>
-            {i < 3 && <span className="ml-1.5 text-gold/70">:</span>}
+            <span className="text-xs font-bold text-festive-foreground sm:text-base">{c.ready ? pad(v) : "--"}</span>
+            <span className="ml-0.5 text-[8px] uppercase text-gold sm:text-[10px]">{l}</span>
+            {i < 3 && <span className="ml-1 text-gold/70 sm:ml-1.5">:</span>}
           </span>
         ))}
       </div>
